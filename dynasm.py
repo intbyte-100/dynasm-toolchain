@@ -56,8 +56,8 @@ def start_preprocessor(file, outfile):
     print(Colors.OKGREEN + "[Task: dynasm]: preprocessing finished. Output file is", outfile)
 
 
-def output_file_name(src_dir, src_file):
-    return str(src_file).replace(".dasm", "")
+def output_file_name(src_dir, src_file, outdir):
+    return outdir + os.path.relpath(str(src_file).replace(".dasm", ""), src_dir)
 
 
 if __name__ == "__main__":
@@ -70,6 +70,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="DynAsm toolchain v1.0.0")
     parser.add_argument("--arch", help="set specified arch")
     parser.add_argument("--dir", help="set source directory")
+    parser.add_argument("--out", help="set output directory")
+
     parser.add_argument("files", type=str, nargs="*", help="source code files")
 
     args = parser.parse_args()
@@ -84,4 +86,4 @@ if __name__ == "__main__":
     minilua = minilua_executable()
 
     for file in src:
-        start_preprocessor(file, output_file_name(args.dir, file))
+        start_preprocessor(file, output_file_name(args.dir, file, (args.out if args.out is not None else "")))
